@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#7c3aed" />
+  <meta name="description" content="Pawly - Tu pet shop moderno. Todo lo que tu mascota necesita." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Pawly" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Pawly 🐾</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:          #0b0717;
+      --bg2:         #110d22;
+      --bg3:         #1a1232;
+      --surface:     #1e1636;
+      --surface2:    #261d45;
+      --border:      rgba(124,58,237,.18);
+      --border2:     rgba(124,58,237,.35);
+
+      --purple:      #7c3aed;
+      --purple-lt:   #9d67f5;
+      --purple-dim:  rgba(124,58,237,.12);
+      --violet:      #a855f7;
+      --pink:        #e879f9;
+      --amber:       #fbbf24;
+      --green:       #4ade80;
+
+      --txt:         #f0eafb;
+      --txt2:        #b8a9d4;
+      --txt3:        #7b6d9a;
+
+      --r-sm:        10px;
+      --r-md:        16px;
+      --r-lg:        24px;
+      --r-xl:        32px;
+
+      --shadow:      0 8px 40px rgba(124,58,237,.25);
+      --shadow-card: 0 4px 24px rgba(0,0,0,.45);
+    }
+
+    /* ── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--txt);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND MESH ────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 10% 0%, rgba(124,58,237,.22) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 90% 100%, rgba(168,85,247,.15) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(232,121,249,.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── NAVBAR ─────────────────────────────────────────────── */
+    .navbar {
+      position: sticky; top: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(16px, 4vw, 48px);
+      height: 64px;
+      background: rgba(11,7,23,.78);
+      backdrop-filter: blur(24px) saturate(160%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Syne', sans-serif;
+      font-size: 1.45rem; font-weight: 800;
+      color: var(--txt);
+      text-decoration: none;
+      letter-spacing: -.02em;
+    }
+    .nav-logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      box-shadow: 0 0 18px rgba(124,58,237,.55);
+    }
+    .nav-logo span { color: var(--purple-lt); }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 4px;
+      list-style: none;
+    }
+    @media (max-width: 640px) { .nav-links { display: none; } }
+    .nav-links a {
+      font-size: .875rem; font-weight: 500;
+      color: var(--txt2); text-decoration: none;
+      padding: 6px 14px; border-radius: var(--r-sm);
+      transition: color .2s, background .2s;
+    }
+    .nav-links a:hover { color: var(--txt); background: var(--purple-dim); }
+
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .nav-btn {
+      display: flex; align-items: center; gap: 6px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .875rem; font-weight: 500;
+      padding: 8px 18px; border-radius: var(--r-sm);
+      cursor: pointer; transition: all .2s; border: none;
+    }
+    .nav-btn-ghost {
+      background: transparent; color: var(--txt2);
+      border: 1px solid var(--border2);
+    }
+    .nav-btn-ghost:hover { background: var(--purple-dim); color: var(--txt); }
+    .nav-btn-cart {
+      background: linear-gradient(135deg, var(--purple), var(--violet));
+      color: #fff;
+      box-shadow: 0 0 16px rgba(124,58,237,.4);
+    }
+    .nav-btn-cart:hover { transform: translateY(-1px); box-shadow: 0 4px 24px rgba(124,58,237,.55); }
+
+    /* ── PROMO BANNER ───────────────────────────────────────── */
+    .promo-banner {
+      position: relative; overflow: hidden;
+      background: linear-gradient(90deg, #4a1d96, var(--purple), #9333ea, var(--pink), #9333ea, var(--purple), #4a1d96);
+      background-size: 400% 100%;
+      animation: promo-slide 8s linear infinite;
+      padding: 0;
+    }
+    @keyframes promo-slide {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+    .promo-track {
+      display: flex; align-items: center;
+      white-space: nowrap;
+      animation: ticker 28s linear infinite;
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .promo-item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 28px;
+      font-size: .8rem; font-weight: 600;
+      color: #fff; letter-spacing: .04em; text-transform: uppercase;
+    }
+    .promo-dot { color: rgba(255,255,255,.5); font-size: .5rem; }
+
+    /* ── HERO ───────────────────────────────────────────────── */
+    .hero {
+      position: relative; z-index: 1;
+      padding: clamp(48px, 8vw, 96px) clamp(16px, 4vw, 48px) clamp(32px, 5vw, 64px);
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--purple-dim);
+      border: 1px solid var(--border2);
+      color: var(--purple-lt);
+      font-size: .75rem; font-weight: 600;
+      letter-spacing: .06em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 999px;
+      margin-bottom: 24px;
+      animation: fade-up .6s both;
+    }
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 7vw, 5rem);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -.03em;
+      animation: fade-up .6s .1s both;
+    }
+    .hero-title .grad {
+      background: linear-gradient(120deg, var(--purple-lt), var(--pink), var(--amber));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      margin-top: 16px;
+      color: var(--txt2); font-size: clamp(.95rem, 2vw, 1.15rem);
+      max-width: 520px; margin-inline: auto;
+      animation: fade-up .6s .2s both;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      margin-top: 32px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: #fff; font-size: 1rem; font-weight: 600;
+      padding: 14px 32px; border-radius: var(--r-lg);
+      text-decoration: none; border: none; cursor: pointer;
+      box-shadow: 0 0 32px rgba(124,58,237,.45);
+      transition: all .25s;
+      animation: fade-up .6s .3s both;
+    }
+    .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(168,85,247,.55); }
+
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SECTION HEADER ─────────────────────────────────────── */
+    .section-header {
+      position: relative; z-index: 1;
+      padding: 0 clamp(16px, 4vw, 48px);
+      margin-bottom: 32px;
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 12px; flex-wrap: wrap;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.4rem, 3.5vw, 2rem);
+      font-weight: 700; letter-spacing: -.02em;
+    }
+    .section-pill {
+      background: var(--purple-dim);
+      border: 1px solid var(--border2);
+      color: var(--purple-lt);
+      font-size: .75rem; font-weight: 600;
+      padding: 4px 12px; border-radius: 999px;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+
+    /* ── PRODUCTS GRID ──────────────────────────────────────── */
+    .products {
+      position: relative; z-index: 1;
+      padding: 0 clamp(12px, 4vw, 48px) 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+      gap: 20px;
+    }
+
+    /* ── PRODUCT CARD ───────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      cursor: pointer;
+      transition: transform .25s, box-shadow .25s, border-color .25s;
+      box-shadow: var(--shadow-card);
+      animation: fade-up .5s both;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(124,58,237,.3);
+      border-color: var(--border2);
+    }
+
+    .card-img {
+      width: 100%; aspect-ratio: 1;
+      background: var(--bg3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4.5rem;
+      position: relative; overflow: hidden;
+    }
+    .card-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.35) 100%);
+    }
+    .card-badge {
+      position: absolute; top: 10px; left: 10px; z-index: 1;
+      background: linear-gradient(135deg, var(--purple), var(--violet));
+      color: #fff; font-size: .65rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+      letter-spacing: .04em; text-transform: uppercase;
+    }
+
+    .card-body { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .card-name {
+      font-family: 'Syne', sans-serif;
+      font-size: .95rem; font-weight: 700;
+      line-height: 1.25;
+    }
+    .card-desc { font-size: .8rem; color: var(--txt2); line-height: 1.5; flex: 1; }
+    .card-pet {
+      display: flex; gap: 4px; flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .card-pet-tag {
+      font-size: .65rem; font-weight: 600;
+      background: rgba(255,255,255,.06);
+      border: 1px solid var(--border);
+      color: var(--txt3); padding: 2px 8px; border-radius: 999px;
+    }
+
+    .card-footer {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .card-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem; font-weight: 800;
+      color: var(--green);
+    }
+    .card-price sup { font-size: .65rem; font-weight: 600; vertical-align: super; }
+    .card-buy {
+      background: linear-gradient(135deg, var(--purple), var(--violet));
+      color: #fff; font-size: .8rem; font-weight: 600;
+      padding: 8px 16px; border-radius: var(--r-sm);
+      border: none; cursor: pointer;
+      transition: all .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .card-buy:hover { transform: scale(1.05); box-shadow: 0 0 16px rgba(124,58,237,.5); }
+
+    /* ── MODAL OVERLAY ──────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(7,4,14,.85);
+      backdrop-filter: blur(16px);
+      display: flex; align-items: flex-end; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    @media (min-width: 600px) {
+      .modal-overlay { align-items: center; }
+    }
+
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      width: 100%; max-width: 480px;
+      padding: clamp(24px, 5vw, 40px);
+      transform: translateY(40px);
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
+      box-shadow: 0 -8px 60px rgba(124,58,237,.25);
+    }
+    @media (min-width: 600px) {
+      .modal { border-radius: var(--r-xl); transform: scale(.92); }
+      .modal-overlay.open .modal { transform: scale(1); }
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--txt2); font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .2s;
+    }
+    .modal-close:hover { background: var(--purple-dim); color: var(--txt); }
+
+    .modal-handle {
+      width: 40px; height: 4px;
+      background: var(--surface2); border-radius: 2px;
+      margin: 0 auto 24px;
+    }
+    @media (min-width: 600px) { .modal-handle { display: none; } }
+
+    .modal-product {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 24px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+    }
+    .modal-emoji { font-size: 3rem; }
+    .modal-info {}
+    .modal-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem; font-weight: 700;
+    }
+    .modal-price-line {
+      display: flex; align-items: center; gap: 8px;
+      margin-top: 4px;
+    }
+    .modal-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--green);
+    }
+    .modal-currency { font-size: .8rem; color: var(--txt3); }
+
+    /* Stripe badge */
+    .stripe-badge {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      background: rgba(99,91,255,.1);
+      border: 1px solid rgba(99,91,255,.25);
+      border-radius: var(--r-sm);
+      padding: 8px 14px; margin-bottom: 20px;
+      font-size: .75rem; color: var(--txt2);
+    }
+    .stripe-badge svg { flex-shrink: 0; }
+
+    /* Stripe form UI */
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block;
+      font-size: .75rem; font-weight: 600;
+      color: var(--txt3); letter-spacing: .04em; text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .form-input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--r-sm);
+      color: var(--txt); font-family: 'DM Sans', sans-serif; font-size: .95rem;
+      padding: 12px 14px;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    .form-input:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(124,58,237,.2);
+    }
+    .form-input::placeholder { color: var(--txt3); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    /* Stripe-style card number with icon */
+    .input-wrapper { position: relative; }
+    .input-wrapper .card-icon {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      font-size: 1.1rem; pointer-events: none;
+    }
+    .input-wrapper .form-input { padding-right: 40px; }
+
+    .pay-btn {
+      width: 100%; margin-top: 8px;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      color: #fff; font-family: 'Syne', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      padding: 15px; border-radius: var(--r-md);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: all .25s;
+      box-shadow: 0 0 28px rgba(124,58,237,.4);
+      letter-spacing: .01em;
+    }
+    .pay-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 32px rgba(168,85,247,.55); }
+    .pay-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .secure-line {
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      margin-top: 12px; font-size: .72rem; color: var(--txt3);
+    }
+
+    /* ── SUCCESS STATE ───────────────────────────────────────── */
+    .modal-success {
+      display: none; flex-direction: column; align-items: center;
+      text-align: center; padding: 16px 0;
+    }
+    .modal-success.show { display: flex; }
+    .modal-form.hide { display: none; }
+
+    .success-icon {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: linear-gradient(135deg, #065f46, #059669);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem; margin-bottom: 20px;
+      box-shadow: 0 0 32px rgba(74,222,128,.3);
+      animation: pop .4s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes pop {
+      from { transform: scale(0); } to { transform: scale(1); }
+    }
+    .success-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem; font-weight: 800; margin-bottom: 8px;
+    }
+    .success-sub { color: var(--txt2); font-size: .9rem; line-height: 1.5; }
+    .success-back {
+      margin-top: 24px;
+      background: var(--purple-dim);
+      border: 1px solid var(--border2);
+      color: var(--purple-lt);
+      font-family: 'DM Sans', sans-serif; font-size: .9rem; font-weight: 600;
+      padding: 10px 24px; border-radius: var(--r-sm);
+      cursor: pointer; transition: all .2s;
+    }
+    .success-back:hover { background: rgba(124,58,237,.25); }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 32px clamp(16px, 4vw, 48px);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .footer-brand { font-family: 'Syne', sans-serif; font-size: .9rem; font-weight: 700; color: var(--txt2); }
+    .footer-brand span { color: var(--purple-lt); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: .8rem; color: var(--txt3); text-decoration: none; transition: color .2s; }
+    .footer-links a:hover { color: var(--txt2); }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAVBAR ─────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-icon">🐾</div>
+      Pawly<span>.</span>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#">Inicio</a></li>
+      <li><a href="#">Perros</a></li>
+      <li><a href="#">Gatos</a></li>
+      <li><a href="#">Pequeños</a></li>
+      <li><a href="#">Ofertas</a></li>
+      <li><a href="#">Blog</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <button class="nav-btn nav-btn-ghost">🔍 Buscar</button>
+      <button class="nav-btn nav-btn-cart">🛒 Carrito <span style="background:rgba(255,255,255,.25);border-radius:999px;padding:1px 7px;font-size:.75rem;">0</span></button>
+    </div>
+  </nav>
+
+  <!-- ─── PROMO TICKER ────────────────────────────────────────── -->
+  <div class="promo-banner" aria-label="Promociones">
+    <div class="promo-track">
+      <!-- duplicated for seamless loop -->
+      <span class="promo-item">🎉 Envío gratis en compras +$299 <span class="promo-dot">●</span></span>
+      <span class="promo-item">🐶 Nueva línea Royal Canin disponible <span class="promo-dot">●</span></span>
+      <span class="promo-item">😺 20% OFF en juguetes para gato <span class="promo-dot">●</span></span>
+      <span class="promo-item">💜 Pago seguro con Stripe <span class="promo-dot">●</span></span>
+      <span class="promo-item">🎁 Lleva 3 y paga 2 en snacks seleccionados <span class="promo-dot">●</span></span>
+      <span class="promo-item">🐾 ¡Bienvenido a Pawly! <span class="promo-dot">●</span></span>
+      <span class="promo-item">🎉 Envío gratis en compras +$299 <span class="promo-dot">●</span></span>
+      <span class="promo-item">🐶 Nueva línea Royal Canin disponible <span class="promo-dot">●</span></span>
+      <span class="promo-item">😺 20% OFF en juguetes para gato <span class="promo-dot">●</span></span>
+      <span class="promo-item">💜 Pago seguro con Stripe <span class="promo-dot">●</span></span>
+      <span class="promo-item">🎁 Lleva 3 y paga 2 en snacks seleccionados <span class="promo-dot">●</span></span>
+      <span class="promo-item">🐾 ¡Bienvenido a Pawly! <span class="promo-dot">●</span></span>
+    </div>
+  </div>
+
+  <!-- ─── HERO ────────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-badge">🌟 Nuevo en Pawly</div>
+    <h1 class="hero-title">
+      Todo lo que tu<br><span class="grad">mascota ama</span>
+    </h1>
+    <p class="hero-sub">
+      Productos premium para perros, gatos y más. Calidad que se siente, precios que se agradecen.
+    </p>
+    <a href="#productos" class="hero-cta">Ver productos 🐾</a>
+  </section>
+
+  <!-- ─── PRODUCTS ────────────────────────────────────────────── -->
+  <div class="section-header" id="productos">
+    <h2 class="section-title">Artículos destacados</h2>
+    <span class="section-pill">10 productos · $10 c/u</span>
+  </div>
+
+  <section class="products" id="product-grid"></section>
+
+  <!-- ─── FOOTER ──────────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-brand">Pawly<span>.</span> © 2025 — Hecho con 💜</div>
+    <nav class="footer-links">
+      <a href="#">Privacidad</a>
+      <a href="#">Términos</a>
+      <a href="#">Contacto</a>
+      <a href="#">FAQ</a>
+    </nav>
+  </footer>
+
+  <!-- ─── PAYMENT MODAL ─────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <div class="modal-handle"></div>
+      <button class="modal-close" id="modal-close" aria-label="Cerrar">✕</button>
+
+      <!-- FORM STATE -->
+      <div class="modal-form" id="modal-form">
+        <div class="modal-product" id="modal-product-info">
+          <div class="modal-emoji" id="modal-emoji"></div>
+          <div class="modal-info">
+            <div class="modal-name" id="modal-name"></div>
+            <div class="modal-price-line">
+              <div class="modal-price" id="modal-price">$10</div>
+              <div class="modal-currency">MXN</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stripe-badge">
+          <!-- Stripe logo -->
+          <svg width="44" height="18" viewBox="0 0 44 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.75 6.24c0-.47.39-.66.98-.66.88 0 1.99.27 2.87.74V3.6C9.7 3.27 8.79 3.12 7.73 3.12 5.3 3.12 3.66 4.37 3.66 6.37c0 3.1 4.26 2.6 4.26 3.93 0 .56-.48.74-1.1.74-1 0-2.28-.41-3.28-1.01v2.72c1.12.49 2.25.7 3.28.7 2.49 0 4.2-1.22 4.2-3.24-.01-3.34-4.27-2.74-4.27-3.97zM17.23 1.14l-2.77.59-.01 9.13c0 1.68 1.26 2.92 2.95 2.92.94 0 1.62-.17 2-.37V11c-.37.15-2.18.67-2.18-1V5.91h2.18V3.54h-2.18l.01-2.4zM22.64 4.23l-.16-.69H20.1v10.07h2.8V7.14c.66-.86 1.78-.7 2.13-.59V4.09c-.36-.14-1.68-.4-2.39.14zM25.72 3.54h2.81v10.07h-2.81V3.54zm0-2.07c0-.79.64-1.47 1.41-1.47.77 0 1.4.68 1.4 1.47 0 .79-.63 1.47-1.4 1.47-.77 0-1.41-.68-1.41-1.47zM34.12 3.12c-1.04 0-1.71.49-2.08.83l-.14-.7h-2.46v13.31l2.8-.59.01-3.23c.38.28 1 .66 2.07.66 2.09 0 3.99-1.68 3.99-5.38-.01-3.4-1.93-4.9-4.19-4.9zm-.74 7.55c-.69 0-1.1-.25-1.38-.56l-.01-4.37c.31-.34.73-.57 1.39-.57 1.06 0 1.8 1.19 1.8 2.74 0 1.59-.72 2.76-1.8 2.76zM44 8.48c0-2.97-1.44-5.36-4.18-5.36-2.76 0-4.43 2.39-4.43 5.33 0 3.52 1.99 5.3 4.82 5.3 1.39 0 2.44-.32 3.23-.85V10.5c-.79.47-1.7.74-2.85.74-1.13 0-2.13-.4-2.26-1.78H44c0-.14.0-.63 0-.98zm-5.68-.97c0-1.32.81-1.86 1.54-1.86.71 0 1.47.54 1.47 1.86h-3.01z" fill="#6772E5"/>
+          </svg>
+          Pago seguro procesado por Stripe · SSL encriptado
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="card-name">Nombre en la tarjeta</label>
+          <input class="form-input" id="card-name" type="text" placeholder="Juan Pérez" autocomplete="cc-name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="card-number">Número de tarjeta</label>
+          <div class="input-wrapper">
+            <input class="form-input" id="card-number" type="tel" placeholder="1234 5678 9012 3456"
+              maxlength="19" autocomplete="cc-number" inputmode="numeric" />
+            <span class="card-icon" id="card-icon">💳</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="card-expiry">Vencimiento</label>
+            <input class="form-input" id="card-expiry" type="tel" placeholder="MM/AA"
+              maxlength="5" autocomplete="cc-exp" inputmode="numeric" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="card-cvc">CVC</label>
+            <input class="form-input" id="card-cvc" type="tel" placeholder="123"
+              maxlength="4" autocomplete="cc-csc" inputmode="numeric" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="card-email">Correo electrónico</label>
+          <input class="form-input" id="card-email" type="email" placeholder="tuemail@ejemplo.com" autocomplete="email" />
+        </div>
+
+        <button class="pay-btn" id="pay-btn">
+          <span id="pay-btn-text">Pagar $10.00 MXN</span>
+        </button>
+
+        <div class="secure-line">
+          🔒 Transacción protegida · No almacenamos datos de pago
+        </div>
+      </div>
+
+      <!-- SUCCESS STATE -->
+      <div class="modal-success" id="modal-success">
+        <div class="success-icon">✓</div>
+        <div class="success-title">¡Pago completado!</div>
+        <div class="success-sub">
+          Tu pedido está confirmado. Recibirás un correo con los detalles en breve.
+          <br><br>¡Gracias por confiar en Pawly! 🐾
+        </div>
+        <button class="success-back" id="success-back">Volver a la tienda</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SCRIPTS ──────────────────────────────────────────────── -->
+
+  <!-- Stripe.js — siempre se carga desde sus servidores oficiales -->
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <script>
+    /* ================================================================
+       ⚙️  CONFIGURACIÓN STRIPE
+       Reemplaza con tu Publishable Key real desde:
+       https://dashboard.stripe.com/apikeys
+       Formato test:  pk_test_xxxxxxxxxxxxxxxxxxxxxxxx
+       Formato live:  pk_live_xxxxxxxxxxxxxxxxxxxxxxxx
+    ================================================================ */
+    const STRIPE_PUBLISHABLE_KEY = 'pk_test_REEMPLAZA_CON_TU_CLAVE';
+
+    /* ================================================================
+       🔗  PAYMENT LINKS DE STRIPE
+       Crea un Payment Link de $10 MXN en tu Dashboard de Stripe:
+       https://dashboard.stripe.com/payment-links
+       → New → Precio fijo $10.00 MXN → Crea el link
+       Luego pega la URL de cada link aquí (o usa uno solo para todos).
+       
+       Si dejas el placeholder, se abrirá un formulario demo local
+       que muestra el flujo de pago SIN procesar ningún cobro.
+    ================================================================ */
+    const PAYMENT_LINK = 'https://buy.stripe.com/REEMPLAZA_CON_TU_LINK';
+
+    /* ================================================================
+       🛍️  CATÁLOGO DE PRODUCTOS (hardcoded)
+    ================================================================ */
+    const products = [
+      {
+        id: 1,
+        emoji: '🦴',
+        name: 'Snack Natural Hueso de Res',
+        desc: 'Premio masticable de hueso de res deshidratado. Alto en proteína, sin conservadores artificiales.',
+        tags: ['Perros'],
+        badge: 'Más vendido'
+      },
+      {
+        id: 2,
+        emoji: '🐱',
+        name: 'Arena Aglutinante Premium',
+        desc: 'Control de olores por 7 días. Fórmula de carbón activado. Presentación de 5 kg.',
+        tags: ['Gatos'],
+        badge: null
+      },
+      {
+        id: 3,
+        emoji: '🎾',
+        name: 'Pelota Interactiva LED',
+        desc: 'Pelota que rueda sola con luces LED parpadeantes. Mantiene a tu perro activo y entretenido.',
+        tags: ['Perros'],
+        badge: 'Nuevo'
+      },
+      {
+        id: 4,
+        emoji: '🐠',
+        name: 'Alimento para Peces Tropical',
+        desc: 'Hojuelas nutritivas con astaxantina para realzar los colores de tus peces tropicales.',
+        tags: ['Peces'],
+        badge: null
+      },
+      {
+        id: 5,
+        emoji: '🛁',
+        name: 'Shampoo de Avena & Aloe',
+        desc: 'Fórmula suave para pieles sensibles. Sin sulfatos ni parabenos. Apto para cachorros.',
+        tags: ['Perros', 'Gatos'],
+        badge: 'Oferta'
+      },
+      {
+        id: 6,
+        emoji: '🏠',
+        name: 'Casa Plegable Portátil',
+        desc: 'Refugio cómodo y lavable para gatos. Base antideslizante. Colores surtidos.',
+        tags: ['Gatos'],
+        badge: null
+      },
+      {
+        id: 7,
+        emoji: '💊',
+        name: 'Vitaminas Multivitamínicas',
+        desc: 'Suplemento masticable con omega-3, biotina y zinc para un pelaje sano y brillante.',
+        tags: ['Perros', 'Gatos'],
+        badge: 'Recomendado'
+      },
+      {
+        id: 8,
+        emoji: '🐹',
+        name: 'Rueda de Ejercicio Silenciosa',
+        desc: 'Rueda giratoria de bajo ruido para hámsters y ratones. Diámetro 20 cm, base estable.',
+        tags: ['Pequeños'],
+        badge: null
+      },
+      {
+        id: 9,
+        emoji: '🦜',
+        name: 'Mezcla Gourmet para Aves',
+        desc: 'Blend de semillas, frutas deshidratadas y nueces. Rico en ácidos grasos esenciales.',
+        tags: ['Aves'],
+        badge: 'Nuevo'
+      },
+      {
+        id: 10,
+        emoji: '🧶',
+        name: 'Kit de Juguetes para Gato x5',
+        desc: 'Set con varilla plumero, ratón de peluche, pelota crinkle, túnel y laserpointer.',
+        tags: ['Gatos'],
+        badge: 'Kit'
+      }
+    ];
+
+    /* ================================================================
+       🃏  RENDER CARDS
+    ================================================================ */
+    const grid = document.getElementById('product-grid');
+
+    products.forEach((p, i) => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.style.animationDelay = `${i * 0.06}s`;
+      card.innerHTML = `
+        <div class="card-img">
+          ${p.badge ? `<span class="card-badge">${p.badge}</span>` : ''}
+          ${p.emoji}
+        </div>
+        <div class="card-body">
+          <div class="card-name">${p.name}</div>
+          <div class="card-desc">${p.desc}</div>
+          <div class="card-pet">${p.tags.map(t => `<span class="card-pet-tag">${t}</span>`).join('')}</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-price"><sup>$</sup>10 <span style="font-size:.7rem;color:var(--txt3);font-weight:500;">MXN</span></div>
+          <button class="card-buy" data-id="${p.id}">Comprar</button>
+        </div>
+      `;
+      card.addEventListener('click', () => openModal(p));
+      grid.appendChild(card);
+    });
+
+    /* ================================================================
+       💳  MODAL
+    ================================================================ */
+    const overlay    = document.getElementById('modal-overlay');
+    const modalClose = document.getElementById('modal-close');
+    const successBack= document.getElementById('success-back');
+    const modalForm  = document.getElementById('modal-form');
+    const modalSucc  = document.getElementById('modal-success');
+
+    let currentProduct = null;
+
+    function openModal(product) {
+      currentProduct = product;
+      document.getElementById('modal-emoji').textContent = product.emoji;
+      document.getElementById('modal-name').textContent  = product.name;
+
+      // Reset to form state
+      modalForm.classList.remove('hide');
+      modalSucc.classList.remove('show');
+
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    modalClose.addEventListener('click', closeModal);
+    successBack.addEventListener('click', closeModal);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    /* ================================================================
+       💰  PAYMENT FLOW
+       Si PAYMENT_LINK está configurado → redirige a Stripe.
+       Si es placeholder → simula el flujo localmente (demo).
+    ================================================================ */
+    const payBtn = document.getElementById('pay-btn');
+    const payBtnText = document.getElementById('pay-btn-text');
+
+    // ── Input masks ──
+    const numInput    = document.getElementById('card-number');
+    const expInput    = document.getElementById('card-expiry');
+    const cvcInput    = document.getElementById('card-cvc');
+    const cardIconEl  = document.getElementById('card-icon');
+
+    numInput.addEventListener('input', e => {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 16);
+      e.target.value = v.match(/.{1,4}/g)?.join(' ') || v;
+      // Card brand icon
+      if (v.startsWith('4'))       cardIconEl.textContent = '💳'; // Visa
+      else if (/^5[1-5]/.test(v)) cardIconEl.textContent = '💳'; // MC
+      else if (v.startsWith('3'))  cardIconEl.textContent = '💳'; // Amex
+      else                         cardIconEl.textContent = '💳';
+    });
+
+    expInput.addEventListener('input', e => {
+      let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+      if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2);
+      e.target.value = v;
+    });
+
+    cvcInput.addEventListener('input', e => {
+      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+    });
+
+    // ── Pay button click ──
+    payBtn.addEventListener('click', async () => {
+      const name   = document.getElementById('card-name').value.trim();
+      const number = numInput.value.replace(/\s/g, '');
+      const expiry = expInput.value;
+      const cvc    = cvcInput.value;
+      const email  = document.getElementById('card-email').value.trim();
+
+      // Basic validation
+      if (!name || number.length < 15 || expiry.length < 5 || cvc.length < 3 || !email.includes('@')) {
+        alert('Por favor completa todos los campos correctamente.');
+        return;
+      }
+
+      payBtn.disabled = true;
+      payBtnText.textContent = 'Procesando…';
+
+      // ── Modo con Payment Link configurado ──────────────────
+      if (!PAYMENT_LINK.includes('REEMPLAZA')) {
+        // Redirige al Payment Link de Stripe (con prefill de email)
+        const url = new URL(PAYMENT_LINK);
+        url.searchParams.set('prefilled_email', email);
+        window.location.href = url.toString();
+        return;
+      }
+
+      // ── Modo demo (sin Payment Link configurado) ───────────
+      // Simula un pago de prueba con Stripe.js
+      try {
+        const stripe = Stripe(STRIPE_PUBLISHABLE_KEY.includes('REEMPLAZA')
+          ? 'pk_test_placeholder'  // Devolverá error, solo demostrativo
+          : STRIPE_PUBLISHABLE_KEY
+        );
+
+        // NOTA: Sin backend no podemos crear un PaymentIntent real.
+        // Este bloque muestra el flujo correcto que usarías con backend:
+        /*
+          const res = await fetch('/api/create-payment-intent', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ amount: 1000, currency: 'mxn' })
+          });
+          const { clientSecret } = await res.json();
+          const result = await stripe.confirmCardPayment(clientSecret, { ... });
+        */
+
+        // Demo: simular delay y mostrar éxito
+        await new Promise(r => setTimeout(r, 1800));
+
+        modalForm.classList.add('hide');
+        modalSucc.classList.add('show');
+
+      } catch (err) {
+        alert('Error al procesar el pago: ' + err.message);
+      } finally {
+        payBtn.disabled = false;
+        payBtnText.textContent = 'Pagar $10.00 MXN';
+      }
+    });
+
+    /* ================================================================
+       📱  SERVICE WORKER (PWA)
+    ================================================================ */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
