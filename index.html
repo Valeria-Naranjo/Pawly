@@ -884,6 +884,7 @@
         });
 
         const data = await res.json();
+        console.log('Respuesta del backend:', data);
 
         if (!res.ok) {
           throw new Error(data.error || 'Error al conectar con el servidor');
