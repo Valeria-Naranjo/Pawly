@@ -25,3 +25,17 @@ self.addEventListener('fetch', e => {
     caches.match(e.request).then(cached => cached || fetch(e.request))
   );
 });
+
+const addButton = document.querySelector(".pay-btn");
+
+addButton.addEventListener("click", async () => {
+
+    const response = await fetch("https://diseno-app.onrender.com/create-checkout-session", {
+        method: "POST"
+    });
+
+    const data = await response.json();
+
+    window.location.href = data.url;
+
+});
