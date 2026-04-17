@@ -872,7 +872,7 @@
 
       try {
         // 1. Crear PaymentIntent en el backend
-        const res = await fetch(`${'https://diseno-app.onrender.com/create-checkout-session'}/create-payment-intent`, {
+        const res = await fetch('https://diseno-app.onrender.com/create-checkout-session', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
