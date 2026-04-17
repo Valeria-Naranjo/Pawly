@@ -883,30 +883,17 @@
           })
         });
 
+        
+
+        // 2. Confirmar pago con Stripe.js
         const data = await res.json();
-        console.log('Respuesta del backend:', data);
 
         if (!res.ok) {
           throw new Error(data.error || 'Error al conectar con el servidor');
         }
-
-        // 2. Confirmar pago con Stripe.js
-        const [expMonth, expYear] = expiry.split('/');
-        const result = await stripe.confirmCardPayment(data.clientSecret, {
-          payment_method: {
-            card: {
-              number,
-              exp_month: expMonth,
-              exp_year:  expYear,
-              cvc
-            },
-            billing_details: { name, email }
-          }
-        });
-
-        if (result.error) {
-          throw new Error(result.error.message);
-        }
+        
+        // Redirige a Stripe Checkout
+        window.location.href = data.url;
 
         // 3. Éxito
         modalForm.classList.add('hide');
